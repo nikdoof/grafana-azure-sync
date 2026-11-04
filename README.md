@@ -75,6 +75,26 @@ SYNC_GROUPS=your_group_1,your_group_2
 docker run --env-file .env --rm grafana-azure-sync:latest
 ```
 
+## Running with uvx
+
+After the package has been published to PyPI, run it without a separate install:
+
+```bash
+uvx grafana-azure-sync
+```
+
+`uvx` installs the project and its dependencies in an isolated environment, then invokes
+the `grafana-azure-sync` command. Set the same environment variables listed above before
+running it. To run directly from a checkout during development, use:
+
+```bash
+uvx --from . grafana-azure-sync
+# or
+uv run grafana-azure-sync
+```
+
+The module can also be launched with `uv run python -m grafana_azure_sync`.
+
 ## How It Works:
 
 - The project fetches Microsoft Entra ID groups using the Microsoft Graph API.
