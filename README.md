@@ -3,12 +3,14 @@
 This open-source project syncs **Microsoft Entra ID** (formerly Azure Active Directory) groups with **Grafana teams**.
 
 ## Features
+
 - Sync users from Microsoft Entra ID groups to Grafana teams.
 - Add users based on their group membership in Entra ID.
 
 ## Docker Setup
 
 ### Prerequisites
+
 - Docker installed on your machine.
 - Grafana API Key (with Editor or Admin privileges).
 - Microsoft Entra ID API credentials (Client ID, Tenant ID, Client Secret).
@@ -35,7 +37,7 @@ SYNC_GROUPS=your_group_1,your_group_2
 ```
 
 2. **Run the Docker container:**
-After setting up the .env file, run the Docker container:
+   After setting up the .env file, run the Docker container:
 
 ```bash
 docker run --env-file .env --rm rassulamanngeldi/grafana-azure-sync:latest
@@ -44,6 +46,7 @@ docker run --env-file .env --rm rassulamanngeldi/grafana-azure-sync:latest
 This will run the synchronization process, syncing Entra ID groups with Grafana teams.
 
 #### **Option 2: Building Docker Image from Source**
+
 If you prefer to build the Docker image yourself, follow these steps:
 
 1. **Clone this repository:**
@@ -71,6 +74,7 @@ SYNC_GROUPS=your_group_1,your_group_2
 ```
 
 4. **Run the Docker container:**
+
 ```bash
 docker run --env-file .env --rm grafana-azure-sync:latest
 ```
@@ -95,6 +99,24 @@ uv run grafana-azure-sync
 
 The module can also be launched with `uv run python -m grafana_azure_sync`.
 
+## Logging
+
+Output uses Python's `logging` module and is written to stderr with a timestamp,
+severity level, and logger name. The default level is `INFO`, showing sync progress,
+warnings, and errors. Set `LOG_LEVEL` in your environment or `.env` file to change
+verbosity (for example, `LOG_LEVEL=DEBUG`). Supported levels are `DEBUG`, `INFO`,
+`WARNING`, `ERROR`, and `CRITICAL`.
+
+`DEBUG` includes group comparisons and membership details, which may contain user
+information; enable it only when needed for troubleshooting.
+
+## HTTP timeouts
+
+All Microsoft authentication, Graph, and Grafana requests use a 5-second connect
+timeout and a 30-second read inactivity timeout. These are not a total request or
+run deadline. A timeout stops the run with an error; requests are not automatically
+retried. A timed-out membership addition may already have succeeded on Grafana.
+
 ## How It Works:
 
 - The project fetches Microsoft Entra ID groups using the Microsoft Graph API.
@@ -103,6 +125,7 @@ The module can also be launched with `uv run python -m grafana_azure_sync`.
 - It adds users to the Grafana teams based on their membership in the Azure AD groups.
 
 ## Limitations and Considerations:
+
 - Grafana Permissions: To use this script, your Grafana API Key must have sufficient permissions (Editor or Admin level).
 - Microsoft Entra ID Permissions: Your Microsoft Entra ID application (using Client ID and Client Secret) needs to have the proper permissions (such as Group.Read.All) to read the groups and members from Azure AD.
 - Grafana Team Permissions: The script assumes that teams exist in Grafana and will attempt to sync users accordingly. Ensure teams are created before running the sync.
@@ -110,4 +133,5 @@ The module can also be launched with `uv run python -m grafana_azure_sync`.
 - Environment Variables: Make sure to set up all the necessary environment variables (TENANT_ID, CLIENT_ID, CLIENT_SECRET, GRAFANA_API_KEY, GRAFANA_URL) before running the container. Incorrect or missing values may cause the script to fail.
 
 ## Contributing:
+
 Feel free to fork this project, create issues, and submit pull requests. Contributions are welcome!
